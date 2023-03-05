@@ -1,4 +1,5 @@
 ﻿using BigSchool.Models;
+using BigSchool.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,12 @@ namespace BigSchool.Controllers
 {
     public class CoursesController : Controller
     {
+    private readonly ApplicationDbContext _dbContext;
         // GET: Courses
+        public CoursesController()
+        {
+            _dbContext = new ApplicationDbContext();
+        }
         public ActionResult Index()
         {
             return View();
@@ -24,7 +30,11 @@ namespace BigSchool.Controllers
         // GET: Courses/Create
         public ActionResult Create()
         {
-            return View(new Course());
+            var viewModel = new CourseViewModel
+            {
+                Categories = _dbContext.Categories.ToList()
+            };
+            return View(viewModel);
         }
 
         // POST: Courses/Create
