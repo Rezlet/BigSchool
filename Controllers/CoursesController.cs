@@ -1,5 +1,6 @@
 ﻿using BigSchool.Models;
 using BigSchool.ViewModels;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,29 +29,40 @@ namespace BigSchool.Controllers
         }
 
         // GET: Courses/Create
+        [Authorize]
         public ActionResult Create()
         {
             var viewModel = new CourseViewModel
             {
                 Categories = _dbContext.Categories.ToList()
             };
+   
             return View(viewModel);
         }
 
         // POST: Courses/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(CourseViewModel courseViewModel)
         {
-            try
-            {
+                if(!ModelState.IsValid)
+                {
+                    courseViewModel.Categories = _dbContext.Categories.ToList();
+                return View("Create", courseViewModel);
+                }
                 // TODO: Add insert logic here
+                var newCourse = new Course
+                {
+                    LecturerId = User.Identity.GetUserId(),
+                    Place = courseViewModel.Place,
+                    CategoryId = courseViewModel.Category,
+                    DateTime = courseViewModel.GetDateTime(),
+                  
+                };
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            _dbContext.Courses.Add(newCourse);
+            _dbContext.SaveChanges();
+            return RedirectToAction("Index", "Home");
+
         }
 
         // GET: Courses/Edit/5
