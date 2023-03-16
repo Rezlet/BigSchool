@@ -1,0 +1,39 @@
+﻿@model BigSchool.ViewModels.CourseViewModel
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+@using (Html.BeginForm(Model.Action, "Courses"))
+ {
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m=>m.Id)
+    <div class="form-group">
+        @Html.LabelFor(m => m.Place)
+        @Html.TextBoxFor(m => m.Place, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Place)
+    </div>
+    <div class="form group">
+        <label for="Date">Date</label>
+        <input class="input-validation-error form-control" data-val="true" data-val-required="The Date field is required." id="Date" name="Date" type="date" value="2001/12/21">
+        <span class="field-validation-error" data-valmsg-for="Date" data-valmsg-replace="true">The field Date is invalid.</span>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Time)
+        @Html.TextBoxFor(m => m.Time, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Time)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Category)
+        @Html.DropDownListFor(m => m.Category,
+             new SelectList(Model.Categories, "Id", "Name"), "", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Categories)
+    </div>
+    <button type="submit" value="Save" class="btn btn-primary">Save</button>
+ }
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval");
+}
